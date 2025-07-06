@@ -17,7 +17,7 @@ useEffect(() => {
     localStorage.removeItem("token_expiry");
     localStorage.removeItem("user");
     // Optionally redirect to login
-    navigate("/login");
+    navigate("/");
   }
   if (token) {
     navigate("/home");
