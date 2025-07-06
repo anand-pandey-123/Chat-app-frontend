@@ -8,6 +8,7 @@ import { BASE_URL } from "../constants/constants";
 const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [socket, setSocket] = useState(null); // Store socket instance
   const user = JSON.parse(localStorage.getItem("user"));
   const { targetId } = useParams();
   const messagesEndRef = useRef(null);
@@ -21,19 +22,15 @@ const Chat = () => {
         }
       });
 
-      setMessages([]); // Clear previous messages
-      res.data.messages.forEach((msg) => {
-        setMessages(messages => [
-          ...messages,
-          {
-            firstName: msg.sender.firstName,
-            lastName: msg.sender.lastName,
-            text: msg.text,
-            self: msg.sender.firstName === user.firstName,
-            createdAt: msg.createdAt,
-          }
-        ]);
-      });
+      // Map messages at once for better performance
+      const mapped = res.data.messages.map((msg) => ({
+        firstName: msg.sender.firstName,
+        lastName: msg.sender.lastName,
+        text: msg.text,
+        self: msg.sender.firstName === user.firstName,
+        createdAt: msg.createdAt,
+      }));
+      setMessages(mapped);
 
     } catch (error) {
       console.log(error)
@@ -46,10 +43,12 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    const socket = createSocketConnection();
-    socket.emit("joinChat", { userId: user._id, targetId, sender: user.firstName });
+    const socketInstance = createSocketConnection();
+    setSocket(socketInstance);
 
-    socket.on("messageReceived", ({ firstName, lastName, newMessage }) => {
+    socketInstance.emit("joinChat", { userId: user._id, targetId, sender: user.firstName });
+
+    socketInstance.on("messageReceived", ({ firstName, lastName, newMessage }) => {
       setMessages(messages => [
         ...messages,
         {
@@ -63,10 +62,10 @@ const Chat = () => {
     });
 
     return () => {
-      socket.disconnect();
+      socketInstance.disconnect();
     }
     // eslint-disable-next-line
-  }, [user._id]);
+  }, [user._id, targetId, user.firstName]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -75,10 +74,15 @@ const Chat = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    const socket = createSocketConnection();
-
-    socket.emit("sendMessage", { firstName: user.firstName, lastName: user.lastName, userId: user._id, targetId, newMessage });
-    setNewMessage("")
+    if (!newMessage.trim() || !socket) return;
+    socket.emit("sendMessage", {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userId: user._id,
+      targetId,
+      newMessage
+    });
+    setNewMessage("");
   }
 
   return (
@@ -140,6 +144,7 @@ const Chat = () => {
           {/* Chat Input */}
           <form
             className="flex items-center border-t px-4 py-3 bg-white rounded-b-xl"
+            onSubmit={sendMessage}
           >
             <input
               type="text"
@@ -149,7 +154,7 @@ const Chat = () => {
               onChange={(e) => setNewMessage(e.target.value)}
             />
             <button
-              onClick={sendMessage}
+              type="submit"
               className="ml-3 px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition"
             >
               Send
