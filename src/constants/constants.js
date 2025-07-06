@@ -1,1 +1,1 @@
-export const BASE_URL = "https://chat-app-backend-hi3m.onrender.com"
+export const BASE_URL = (location.hostname === "localhost" ? "http://localhost:4000" : "https://chat-app-backend-hi3m.onrender.com")
