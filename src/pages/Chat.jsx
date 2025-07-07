@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { createSocketConnection } from "../constants/socket";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { BASE_URL } from "../constants/constants";
 
@@ -12,6 +12,7 @@ const Chat = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const { targetId } = useParams();
   const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
 
   const fetchChats = async () => {
     try {
@@ -91,8 +92,18 @@ const Chat = () => {
       <div className="flex flex-col w-full h-full flex-1 items-center justify-center py-4">
         <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg flex flex-col h-[80vh] border border-gray-200">
           {/* Chat Header */}
-          <div className="flex items-center px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-500 to-purple-400 rounded-t-xl">
-            <div className="w-10 h-10 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-lg mr-3">
+          <div className="flex items-center px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-500 to-purple-400 rounded-t-xl relative">
+            {/* Back Button */}
+            <button
+              onClick={() => navigate(-1)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-indigo-700 rounded-full p-2 shadow transition"
+              aria-label="Back"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <div className="w-10 h-10 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-lg mr-3 ml-8">
               <span>
                 {targetId?.slice(0, 2).toUpperCase()}
               </span>
