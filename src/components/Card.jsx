@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Card = ({ name }) => {
   return (
@@ -13,8 +13,12 @@ const Card = ({ name }) => {
           />
         </div>
         <div className="flex flex-col">
-          <h1 className="text-base sm:text-lg font-semibold">{name.firstName} {name.lastName}</h1>
-          <p className="text-xs sm:text-sm text-gray-500 truncate max-w-[120px] sm:max-w-xs">@{name.bio}...</p>
+          <h1 className="text-base sm:text-lg font-semibold">
+            {name.firstName} {name.lastName}
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 truncate max-w-[120px] sm:max-w-xs">
+            @{name.bio}...
+          </p>
         </div>
       </div>
       <Link to={"/chat/" + name._id} className="w-full sm:w-auto">
@@ -23,7 +27,7 @@ const Card = ({ name }) => {
         </button>
       </Link>
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;

@@ -8,7 +8,7 @@ import { BASE_URL } from "../constants/constants";
 const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [socket, setSocket] = useState(null); // Store socket instance
+  const [socket, setSocket] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
   const { targetId } = useParams();
   const messagesEndRef = useRef(null);
@@ -23,7 +23,6 @@ const Chat = () => {
         }
       });
 
-      // Map messages at once for better performance
       const mapped = res.data.messages.map((msg) => ({
         firstName: msg.sender.firstName,
         lastName: msg.sender.lastName,
@@ -68,7 +67,6 @@ const Chat = () => {
     // eslint-disable-next-line
   }, [user._id, targetId, user.firstName]);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -89,39 +87,39 @@ const Chat = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 flex flex-col">
       <Navbar />
-      <div className="flex flex-col w-full h-full flex-1 items-center justify-center py-4">
-        <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg flex flex-col h-[80vh] border border-gray-200">
+      <div className="flex flex-col w-full h-full flex-1 items-center justify-center py-2 sm:py-4 px-1 sm:px-0">
+        <div className="w-full max-w-full sm:max-w-2xl bg-white rounded-xl shadow-lg flex flex-col h-[90vh] sm:h-[80vh] border border-gray-200">
           {/* Chat Header */}
-          <div className="flex items-center px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-500 to-purple-400 rounded-t-xl relative">
+          <div className="flex items-center px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-500 to-purple-400 rounded-t-xl relative">
             {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-indigo-700 rounded-full p-2 shadow transition"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-indigo-700 rounded-full p-2 shadow transition"
               aria-label="Back"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <div className="w-10 h-10 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-lg mr-3 ml-8">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-base sm:text-lg mr-2 sm:mr-3 ml-8">
               <span>
                 {targetId?.slice(0, 2).toUpperCase()}
               </span>
             </div>
             <div>
-              <div className="font-semibold text-white text-lg">Chat Room</div>
+              <div className="font-semibold text-white text-base sm:text-lg">Chat Room</div>
               <div className="text-xs text-indigo-100">Online</div>
             </div>
           </div>
           {/* Chat Body */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-gray-50">
+          <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-2 sm:py-3 space-y-2 sm:space-y-3 bg-gray-50">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
                 className={`flex ${msg?.self ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`relative px-4 py-2 rounded-2xl max-w-[70%] text-base break-words shadow-sm ${
+                  className={`relative px-3 py-2 sm:px-4 sm:py-2 rounded-2xl max-w-[85%] sm:max-w-[70%] text-sm sm:text-base break-words shadow-sm ${
                     msg?.self
                       ? "bg-indigo-600 text-white rounded-br-none"
                       : "bg-white text-gray-800 rounded-bl-none border border-gray-200"
@@ -154,19 +152,19 @@ const Chat = () => {
           </div>
           {/* Chat Input */}
           <form
-            className="flex items-center border-t px-4 py-3 bg-white rounded-b-xl"
+            className="flex items-center border-t px-2 sm:px-4 py-2 sm:py-3 bg-white rounded-b-xl"
             onSubmit={sendMessage}
           >
             <input
               type="text"
-              className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-gray-50 text-gray-800"
+              className="flex-1 px-3 sm:px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-gray-50 text-gray-800 text-sm sm:text-base"
               placeholder="Type a message"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
             <button
               type="submit"
-              className="ml-3 px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition"
+              className="ml-2 sm:ml-3 px-4 sm:px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition text-sm sm:text-base"
             >
               Send
             </button>

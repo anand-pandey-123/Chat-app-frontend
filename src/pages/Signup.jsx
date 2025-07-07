@@ -31,11 +31,15 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post(BASE_URL + "/api/v1/user/signup", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        BASE_URL + "/api/v1/user/signup",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log(response.data);
       navigate("/");
     } catch (error) {
@@ -162,7 +166,7 @@ const Signup = () => {
             </div>
             <button
               type="submit"
-              className="w-full py-2 bg-indigo-600 text-white font-bold rounded-md hover:bg-indigo-700 transition shadow-md tracking-wide font-mono text-lg"
+              className="w-full py-2 bg-indigo-600 text-white font-bold rounded-md hover:bg-indigo-700 transition shadow-md tracking-wide font-mono text-base sm:text-lg sm:py-2.5"
             >
               Sign Up
             </button>
