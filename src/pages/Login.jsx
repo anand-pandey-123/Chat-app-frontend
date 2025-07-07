@@ -19,9 +19,7 @@ useEffect(() => {
     // Optionally redirect to login
     navigate("/");
   }
-  if (token) {
-    navigate("/home");
-  }
+
 }, []);
 
   const handleSubmit = async (e) => {
